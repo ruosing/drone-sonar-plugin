@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"os"
+
+	"github.com/codegangsta/cli"
 )
 
 var build = "1" // build number set at compile time
@@ -88,6 +89,26 @@ func main() {
 			EnvVar: "PLUGIN_BRANCHANALYSIS",
 		},
 		cli.BoolFlag{
+			Name:   "prAnalysis",
+			Usage:  "run analysis of the PR branch",
+			EnvVar: "PLUGIN_PRANALYSIS",
+		},
+		cli.StringFlag{
+			Name:   "prKey",
+			Usage:  "pull_request_id ",
+			EnvVar: "DRONE_PULL_REQUEST",
+		},
+		cli.StringFlag{
+			Name:   "prBranch",
+			Usage:  "pull request branch",
+			EnvVar: "DRONE_SOURCE_BRANCH",
+		},
+		cli.StringFlag{
+			Name:   "prBase",
+			Usage:  "pull request base branch",
+			EnvVar: "DRONE_TARGET_BRANCH",
+		},
+		cli.BoolFlag{
 			Name:   "usingProperties",
 			Usage:  "using sonar-project.properties",
 			EnvVar: "PLUGIN_USINGPROPERTIES",
@@ -105,17 +126,20 @@ func run(c *cli.Context) {
 			Host:  c.String("host"),
 			Token: c.String("token"),
 
-			Version:        c.String("ver"),
-			Branch:         c.String("branch"),
-			Timeout:        c.String("timeout"),
-			Sources:        c.String("sources"),
-			Inclusions:     c.String("inclusions"),
-			Exclusions:     c.String("exclusions"),
-			Level:          c.String("level"),
-			ShowProfiling:  c.String("showProfiling"),
-			BranchAnalysis: c.Bool("branchAnalysis"),
+			Version:         c.String("ver"),
+			Branch:          c.String("branch"),
+			Timeout:         c.String("timeout"),
+			Sources:         c.String("sources"),
+			Inclusions:      c.String("inclusions"),
+			Exclusions:      c.String("exclusions"),
+			Level:           c.String("level"),
+			ShowProfiling:   c.String("showProfiling"),
+			BranchAnalysis:  c.Bool("branchAnalysis"),
+			PRAnalysis:      c.Bool("prAnalysis"),
+			PRKey:           c.String("prKey"),
+			PRBranch:        c.String("prBranch"),
+			PRBase:          c.String("prBase"),
 			UsingProperties: c.Bool("usingProperties"),
-
 		},
 	}
 

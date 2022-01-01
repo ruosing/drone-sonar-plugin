@@ -14,15 +14,19 @@ type (
 		Host  string
 		Token string
 
-		Version        string
-		Branch         string
-		Sources        string
-		Timeout        string
-		Inclusions     string
-		Exclusions     string
-		Level          string
-		ShowProfiling  string
-		BranchAnalysis bool
+		Version         string
+		Branch          string
+		Sources         string
+		Timeout         string
+		Inclusions      string
+		Exclusions      string
+		Level           string
+		ShowProfiling   string
+		PRKey           string
+		PRBranch        string
+		PRBase          string
+		BranchAnalysis  bool
+		PRAnalysis      bool
 		UsingProperties bool
 	}
 	Plugin struct {
@@ -52,13 +56,25 @@ func (p Plugin) Exec() error {
 		args = append(args, argsParameter...)
 	}
 
+	if p.Config.BranchAnalysis && p.Config.PRAnalysis {
+		return fmt.Errorf("invalid arguments: BranchAnalysis and PRAnalysis could not be both true")
+	}
 
 	if p.Config.BranchAnalysis {
-		args = append(args, "-Dsonar.branch.name=" + p.Config.Branch)
+		args = append(args, "-Dsonar.branch.name="+p.Config.Branch)
+	}
+
+	if p.Config.PRAnalysis {
+		prParameters := []string{
+			"-Dsonar.pullrequest.key=" + p.Config.PRKey,
+			"-Dsonar.pullrequest.branch=" + p.Config.PRBranch,
+			"-Dsonar.pullrequest.base=" + p.Config.PRBase,
+		}
+		args = append(args, prParameters...)
 	}
 
 	cmd := exec.Command("sonar-scanner", args...)
-	// fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
+	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	fmt.Printf("==> Code Analysis Result:\n")

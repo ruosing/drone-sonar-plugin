@@ -32,3 +32,18 @@ steps
       sonar_token:
         from_secret: sonar_token
 ```
+
+### Changes ###
+To support pull request decoration
+
+```yaml
+steps
+- name: code-analysis
+  image: aosapps/drone-sonar-plugin
+  settings:
+      sonar_host:
+        from_secret: sonar_host
+      sonar_token:
+        from_secret: sonar_token
+      prAnalysis: true
+```
